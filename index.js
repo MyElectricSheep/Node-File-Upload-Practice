@@ -3,6 +3,7 @@ const upload = require('./utils/imageUploader')
 const path = require('path')
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 app.use(express.static(__dirname + '/public'));
 
@@ -15,7 +16,7 @@ app.post('/upload-profile-pic', upload.single('profile_pic'), (req, res) => {
       return res.status(400).send(fileValidationError);
     }
     console.log(file)
-    res.send(`<div>You have uploaded this image: <br/> <img src="http://localhost:3000/uploads/${req.file.filename}" width="500" /></div>`);
+    res.send(`<div>You have uploaded this image: <br/> <img src="http://localhost:${port}/uploads/${req.file.filename}" width="500" /></div>`);
   })
 
 app.post('/upload-cat-pics', upload.array('cat_pics'), (req, res) => {
@@ -27,13 +28,13 @@ app.post('/upload-cat-pics', upload.array('cat_pics'), (req, res) => {
     return res.status(400).send(fileValidationError);
   }
   console.log(files)
-  res.send(`<div>You have uploaded these images: <br/> ${files.map(file => `<img src="http://localhost:3000/uploads/${file.filename}" width="500" />`)}</div>`);
+  res.send(`<div>You have uploaded these images: <br/> ${files.map(file => `<img src="http://localhost:${port}/uploads/${file.filename}" width="500" />`)}</div>`);
 })
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'))
 })
 
-const port = process.env.PORT || 3000;
+
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
