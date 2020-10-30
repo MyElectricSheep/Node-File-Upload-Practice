@@ -5,6 +5,8 @@ const path = require('path')
 const app = express();
 const port = process.env.PORT || 3000;
 
+console.log(process.env)
+
 app.use(express.static(__dirname + '/public'));
 
 app.post('/upload-profile-pic', upload.single('profile_pic'), (req, res) => {
@@ -16,7 +18,8 @@ app.post('/upload-profile-pic', upload.single('profile_pic'), (req, res) => {
       return res.status(400).send(fileValidationError);
     }
     console.log(file)
-    res.send(`<div>You have uploaded this image: <br/> <img src="http://localhost:${port}/uploads/${req.file.filename}" width="500" /></div>`);
+    // res.send(`<div>You have uploaded this image: <br/> <img src="http://localhost:${port}/uploads/${req.file.filename}" width="500" /></div>`);
+    res.send(`<div>You have uploaded this image: <br/> <img src="/uploads/${req.file.filename}" width="500" /></div>`);
   })
 
 app.post('/upload-cat-pics', upload.array('cat_pics'), (req, res) => {
