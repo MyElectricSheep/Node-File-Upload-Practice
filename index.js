@@ -1,5 +1,6 @@
 const express = require('express');
 const upload = require('./utils/imageUploader')
+const path = require('path')
 
 const app = express();
 
@@ -27,6 +28,10 @@ app.post('/upload-cat-pics', upload.array('cat_pics'), (req, res) => {
   }
   console.log(files)
   res.send(`<div>You have uploaded these images: <br/> ${files.map(file => `<img src="http://localhost:3000/uploads/${file.filename}" width="500" />`)}</div>`);
+})
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'))
 })
 
 const port = process.env.PORT || 3000;
