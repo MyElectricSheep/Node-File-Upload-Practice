@@ -7,7 +7,7 @@ const router = express.Router();
 const PORT = process.env.PORT || 3000;
 
 router.get('/', (_, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(process.cwd() + '/index.html');
 });
 
 router.get('/get-pics', (req, res) => {
