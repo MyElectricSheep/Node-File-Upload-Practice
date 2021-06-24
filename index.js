@@ -9,6 +9,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.static(__dirname + "/public"));
 
+// Option 1 (no db setup):
 // app.post('/upload-profile-pic', upload.single('profile_pic'), (req, res) => {
 //     const {file, fileValidationError} = req
 //     if (!file) {
@@ -33,7 +34,7 @@ app.use(express.static(__dirname + "/public"));
 //   res.send(`<div>You have uploaded these images: <br/> ${files.map(file => `<img src="/uploads/${file.filename}" width="500" />`)}</div>`);
 // })
 
-// Alternative with custom middleware
+// Option 2: Alternative with custom middlewares
 const multerValidation = (req, res, next) => {
   const { url, file, files, fileValidationError } = req;
   if (url === "/upload-profile-pic") {
