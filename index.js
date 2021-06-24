@@ -47,14 +47,41 @@ const multerValidation = (req, res, next) => {
   next();
 };
 
+const uploadToDatabase = async (req, res, next) => {
+  const uploadPic = async (file) => {
+    const {
+      rows: [insertedPic],
+    } = await db.query(
+      `INSERT INTO images (name, path) VALUES ($1, $2) RETURNING *`,
+      [file.filename, "/uploads"]
+    );
+    return insertedPic;
+  };
+
+  const { url, file, files } = req;
+
+  if (url === "/upload-profile-pic") {
+    const insertedPic = await uploadPic(file);
+    req.insertedPic = insertedPic;
+    next();
+  }
+  if (url === "/upload-cat-pics") {
+    const insertedPics = files.map((file) => uploadPic(file));
+    req.insertedPics = await Promise.all(insertedPics);
+    next();
+  }
+};
+
 app.post(
   "/upload-profile-pic",
   upload.single("profile_pic"),
   multerValidation,
+  uploadToDatabase,
   (req, res) => {
-    const { file } = req;
+    const { path, name } = req.insertedPic;
+
     res.send(
-      `<div>You have uploaded this image: <br/> <img src="/uploads/${file.filename}" width="500" /></div>`
+      `<div>You have uploaded this image: <br/> <img src="${path}/${name}" width="500" /></div>`
     );
   }
 );
@@ -63,17 +90,47 @@ app.post(
   "/upload-cat-pics",
   upload.array("cat_pics"),
   multerValidation,
+  uploadToDatabase,
   (req, res) => {
-    const { files } = req;
+    const { insertedPics } = req;
     let html = "";
 
-    files.forEach(
-      (file) => (html += `<img src="/uploads/${file.filename}" width="500" />`)
+    insertedPics.forEach(
+      ({ path, name }) => (html += `<img src="${path}/${name}" width="500" />`)
     );
 
     res.send(`<div>You have uploaded these images: <br/> ${html} </div>`);
   }
 );
+
+app.get("/get-pics/:id?", async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!id) {
+      let html = "";
+      const { rows: allPics } = await db.query("SELECT * FROM images");
+      allPics.forEach((pic) => {
+        html += `<li><a href="http://localhost:${port}/get-pics/${pic.pic_id}">${pic.name}</a></li>`;
+      });
+      if (!html)
+        return res.send("<h2>There is no uploaded pictures so far</h2>");
+      res.send(
+        `<div><h2>Here are all the uploaded pictures so far:</h2> <br/> <ul>${html}</ul> </div>`
+      );
+    } else {
+      const {
+        rows: [onePic],
+      } = await db.query("SELECT * FROM images WHERE pic_id=$1", [id]);
+      console.log(onePic);
+      res.send(
+        `<div>Here is the picture you requested: <br/> <img src="http://localhost:${port}${onePic.path}/${onePic.name}" alt="" width="500"/></div>`
+      );
+    }
+  } catch (e) {
+    console.log(e.message);
+    res.status(500).send("Could not get the requested pictures :", e.message);
+  }
+});
 
 app.get("/reset", async (req, res) => {
   const uploadsPath = path.resolve(__dirname, "public", "uploads");
@@ -91,7 +148,8 @@ app.get("/reset", async (req, res) => {
       path varchar(255) NOT NULL
    ); 
     `);
-    res.send("DB + Uploads folder reset successfully");
+    console.log("DB + Uploads folder reset successfully");
+    res.redirect("/");
   } catch (e) {
     res.status(500).send("Internal Server Error. Reset failed: ", e.message);
   }
