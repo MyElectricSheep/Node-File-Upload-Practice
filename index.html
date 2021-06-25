@@ -7,7 +7,7 @@
   <body>
     <form
       method="POST"
-      action="http://localhost:3000/upload-profile-pic"
+      action="/upload-profile-pic"
       enctype="multipart/form-data"
     >
       <div>
@@ -21,11 +21,7 @@
     <br />
     <hr />
     <br />
-    <form
-      method="POST"
-      action="http://localhost:3000/upload-cat-pics"
-      enctype="multipart/form-data"
-    >
+    <form method="POST" action="/upload-cat-pics" enctype="multipart/form-data">
       <div>
         <label>Select your cat pictures:</label>
         <input type="file" name="cat_pics" multiple />
