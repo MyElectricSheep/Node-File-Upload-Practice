@@ -41,7 +41,8 @@ const multerValidation = (req, res, next) => {
     if (!file) return res.status(400).send("Please upload a file");
   }
   if (url === "/upload-cat-pics") {
-    if (!files) return res.status(400).send("Please upload some files");
+    if (!files || !files.length)
+      return res.status(400).send("Please upload some files");
   }
   if (fileValidationError) return res.status(400).send(fileValidationError);
   console.log({ data: req.file || req.files });
