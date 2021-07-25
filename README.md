@@ -1,8 +1,5 @@
 # FileUpload
 
-File Upload Middleware exercise using [Multer](https://www.npmjs.com/package/multer)
+### File Upload Middleware using [Multer](https://www.npmjs.com/package/multer) and the [Multer S3 engine](https://www.npmjs.com/package/multer-s3)
 
-index2.js ==> Simplest implementation
-
-index.js ==> Full implementation with diskStorage settings / fileFilter / error handling
-
+Heroku: Using AWS S3 to Store Static Assets and File Uploads [link1](https://devcenter.heroku.com/articles/s3) [link2](https://devcenter.heroku.com/articles/s3-upload-node)
