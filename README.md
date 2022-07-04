@@ -1,8 +1,5 @@
 # Handle file upload in NodeJS with Multer
 
-- ##### This is an exercise I created for the [WBS Coding School](https://www.wbscodingschool.com/) to make web dev students practice their `file upload` skills in a NodeJS app using [Multer](https://www.npmjs.com/package/multer).
-
-
 - This repo contains the correction of the exercise:
     - On the `master` branch: **index2.js** ==> contains the simplest implementation possible / **index.js** ==> contains a more solid implementation with `diskStorage settings` / `file filtering` / `error handling`
     - On the `feat/s3upload` branch: we still use Multer, but this time we upload each file in a bucket on Amazon S3 using the [Multer S3 engine](https://www.npmjs.com/package/multer-s3)
